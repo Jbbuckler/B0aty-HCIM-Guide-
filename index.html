@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <title>Route Checklist</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="header-inner">
+        <h1>Guide:B0aty HCIM Guide V3</h1>
+        <p>Interactive checklist version of the B0aty HCIM Guide v3.0</p>
+
+        <section class="controls" aria-label="Checklist controls">
+          <label class="search">
+            <span aria-hidden="true">Search</span>
+            <input id="searchInput" type="search" placeholder="Search tasks...">
+          </label>
+          <div class="stats" aria-live="polite">
+            <span id="doneCount">0</span>/<span id="totalCount">0</span> tasks (<span id="progressLabel">0%</span>)
+          </div>
+          <button id="resetAll" type="button">Reset all</button>
+          <button id="clearNotes" type="button">Clear notes</button>
+          <label class="toggle">
+            <input id="hideDone" type="checkbox">
+            <span>Hide completed</span>
+          </label>
+        </section>
+      </div>
+    </header>
+
+    <main>
+      <section class="messagebox">
+        <strong>Guide</strong>
+        <span>This local version keeps the wiki-style guide flow, with checkboxes, notes, and bank pictures added for tracking.</span>
+      </section>
+      <nav id="sectionNav" class="contents" aria-label="Checklist sections"></nav>
+      <section class="guide-notes" aria-label="Guide notes">
+        <label for="guideNotes">Notes</label>
+        <textarea id="guideNotes" placeholder="Add overall guide notes here..."></textarea>
+      </section>
+      <p id="visibleLabel" class="visible-label">Showing all steps</p>
+      <section class="guide-intro" aria-label="Guide introduction">
+        <p>Tpapa created this guide &amp; I stole it and created it to try and be as non-competitive as possible with other players to hopefully prevent early bottlenecking. It is a Ironman/HCIM route to Song of the Elves completion with little downtime for 70 herblore requirement. We also complete Recipe for Disaster, Moons of Peril, Royal Titans &amp; maybe Piety. Throughout play ALL lamps go to Herblore. If the guide mentions 'Continue/Continue until/Complete X quest, you can start a quest helper for this quest and follow as directed. There is a LOT of multi-questing so you will be ignoring Quest Helper a lot. Main account alt recommended but not required for any steps.</p>
+        <p>Do all Random Events except: Maze, Mime, Camo &amp; Gravedigger</p>
+        <p>This guide DOES NOT include any LMS but if you enjoy LMS and enjoy PvP or want to learn a bit, I HEAVILY advise going to LMS at 750 total and getting Rune Arrows to Alch while questing.</p>
+        <p>I would heavily recommend the 'Time Tracking &amp; Time Tracking Reminder' plugins. You want to do a Farm Run &amp; Birdhouse run almost any time you are withdrawing new gear for the next step if they are ready. IT IS NOT WORTH teleporting out of slayer tasks and mid quest to do these.</p>
+        <p>Keep 2x Seeds in Seed Vault at all times for contracts. Only do a herb run when you have a surplus of 5-6 seeds</p>
+        <p>As there is a hard 70 Agility requirement for Song of the Elves, it is extremely efficient to get this completed as soon as possible even though agility sucks as you will then have improved energy restoration, Graceful &amp; 1M+ Coins from Agility Pyramid before starting. You will have to get 70 Agility anyway and the methods don't viably improve. Some optional methods to make early fast GP on accounts this guide doesn't mention:</p>
+        <ul>
+          <li>Early revenants (initial 100k required)</li>
+          <li>1+1 Soul wars (40 combat requirement)</li>
+          <li>LMS Rune Arrows (750 total req+30QP req)*</li>
+          <li>Blackjacking with Rogue equipment</li>
+          <li>Agility Pyramid</li>
+          <li>Eclipse Red's</li>
+        </ul>
+        <p>*You can sell rune arrows to the Market Seller in Pollnivneach for around 200 each (10-15 per world) to pay for nature runes to alch the rest.</p>
+        <p>Upon creating your account, DO NOT choose a username with the words or phrases 'Iron' 'HC' 'Fe', 'GIM', 'GIMP'. This is the most important step of the guide.</p>
+        <p>Use all Lamps on Herblore after quest is complete unless specified</p>
+        <p>A lot of the time the guide will assume you have combat gear on you. Sometimes it is specified, sometimes it is not. I would always have a weapon/ammunition on you to kill monsters. Magic solves almost every fight except for Black Knight Titan</p>
+        <h3>Guide specific terminology</h3>
+        <p>Macroquesting: Macroquesting is the process of completing multiple quests simultaneously, progressing your account in an "optimal" way, ensuring that the maximum number of quests are being done during any given visit to an area. It's a crucial part of efficient gameplay, for use when making alternate (possibly Ironman) accounts. For a given style of gameplay, it's theoretically possible to "solve" the exact chain of quest steps and item gathering grinds, however there is currently insufficient data in a suitable format to build such a solver.</p>
+      </section>
+      <h2 class="guide-title">Guide</h2>
+      <section id="checklist" class="checklist" aria-label="Checklist items"></section>
+    </main>
+
+    <script src="data.js?v=4"></script>
+    <script src="app.js?v=32"></script>
+  </body>
+</html>
