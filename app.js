@@ -55,15 +55,18 @@
   const episodes = buildEpisodes(sections);
 
   totalCount.textContent = getAllTasks().length;
-  if (guideNotes) guideNotes.value = localStorage.getItem(guideNotesKey) || "";
+  if (guideNotes) {
+    guideNotes.appendChild(renderRichNoteEditor({
+      value: localStorage.getItem(guideNotesKey) || "",
+      placeholder: "Add overall guide notes here...",
+      onSave: (html) => localStorage.setItem(guideNotesKey, html)
+    }));
+  }
   renderNav();
   render();
 
   searchInput.addEventListener("input", render);
   hideDone.addEventListener("change", render);
-  guideNotes?.addEventListener("input", () => {
-    localStorage.setItem(guideNotesKey, guideNotes.value);
-  });
   resetAll.addEventListener("click", () => {
     if (!confirm("Reset every checked task?")) return;
     done.clear();
@@ -73,7 +76,10 @@
   clearNotes.addEventListener("click", () => {
     if (!confirm("Clear all section notes?")) return;
     Object.keys(notes).forEach((key) => delete notes[key]);
-    if (guideNotes) guideNotes.value = "";
+    if (guideNotes) {
+      const editor = guideNotes.querySelector(".rich-note-editor");
+      if (editor) editor.innerHTML = "";
+    }
     localStorage.removeItem(guideNotesKey);
     saveNotes();
     render();
@@ -122,6 +128,7 @@
 
       if (!text) return;
       if (!current.items.length && text.toLowerCase() === current.title.toLowerCase()) return;
+      if (text.toLowerCase() === "[uncheck all]") return;
 
       extractVideoEmbeds(text).forEach((src) => {
         if (!current.videos.includes(src)) current.videos.push(src);
@@ -129,8 +136,8 @@
 
       current.items.push({
         id: `task-${taskIndex++}`,
-        text: text.toLowerCase() === "[uncheck all]" ? "Checkpoint: uncheck temporary items before continuing" : text,
-        originalText: text.toLowerCase() === "[uncheck all]" ? "Checkpoint: uncheck temporary items before continuing" : text
+        text,
+        originalText: text
       });
     });
 
@@ -455,6 +462,7 @@
     const body = document.createElement("div");
     body.className = "section-body";
     if (section.videos.length) body.classList.add("has-videos");
+    if (section.images.length) body.classList.add("has-pictures");
 
     const items = document.createElement("div");
     items.className = "items";
@@ -468,20 +476,19 @@
     const noteWrap = document.createElement("aside");
     noteWrap.className = "notes";
     noteWrap.innerHTML = "<h3>Notes</h3>";
-    const textarea = document.createElement("textarea");
-    textarea.placeholder = "Add your notes here...";
-    textarea.value = notes[section.id] || "";
-    textarea.addEventListener("input", () => {
-      notes[section.id] = textarea.value;
-      saveNotes();
-    });
-    noteWrap.appendChild(textarea);
+    noteWrap.appendChild(renderRichNoteEditor({
+      value: notes[section.id] || "",
+      placeholder: "Add your notes here...",
+      onSave: (html) => {
+        notes[section.id] = html;
+        saveNotes();
+      }
+    }));
     body.appendChild(noteWrap);
 
-    const pictureWrap = document.createElement("aside");
-    pictureWrap.className = "picture";
-    pictureWrap.innerHTML = "<h3>Picture</h3>";
     if (section.images.length) {
+      const pictureWrap = document.createElement("aside");
+      pictureWrap.className = "picture";
       const list = document.createElement("div");
       list.className = "picture-list";
       section.images.forEach((src, index) => {
@@ -492,12 +499,8 @@
         list.appendChild(img);
       });
       pictureWrap.appendChild(list);
-    } else {
-      const empty = document.createElement("div");
-      empty.className = "picture-empty";
-      pictureWrap.appendChild(empty);
+      body.appendChild(pictureWrap);
     }
-    body.appendChild(pictureWrap);
 
     if (section.videos.length) {
       const videoWrap = document.createElement("aside");
@@ -597,6 +600,78 @@
 
     row.append(field, rowActions);
     return row;
+  }
+
+  function renderRichNoteEditor({ value, placeholder, onSave }) {
+    const wrap = document.createElement("div");
+    wrap.className = "rich-note";
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "rich-note-toolbar";
+
+    [
+      { label: "B", title: "Bold", command: "bold" },
+      { label: "I", title: "Italic", command: "italic" },
+      { label: "U", title: "Underline", command: "underline" }
+    ].forEach((tool) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = tool.label;
+      button.title = tool.title;
+      button.addEventListener("click", () => runNoteCommand(editor, tool.command));
+      toolbar.appendChild(button);
+    });
+
+    const size = document.createElement("select");
+    size.title = "Font size";
+    [
+      ["", "Size"],
+      ["2", "Small"],
+      ["3", "Normal"],
+      ["4", "Large"],
+      ["5", "X Large"]
+    ].forEach(([val, label]) => {
+      const option = document.createElement("option");
+      option.value = val;
+      option.textContent = label;
+      size.appendChild(option);
+    });
+    size.addEventListener("change", () => {
+      if (size.value) runNoteCommand(editor, "fontSize", size.value);
+      size.value = "";
+    });
+    toolbar.appendChild(size);
+
+    const color = document.createElement("input");
+    color.type = "color";
+    color.title = "Text color";
+    color.value = "#171717";
+    color.addEventListener("input", () => runNoteCommand(editor, "foreColor", color.value));
+    toolbar.appendChild(color);
+
+    const clear = document.createElement("button");
+    clear.type = "button";
+    clear.textContent = "Clear";
+    clear.title = "Clear formatting";
+    clear.addEventListener("click", () => runNoteCommand(editor, "removeFormat"));
+    toolbar.appendChild(clear);
+
+    const editor = document.createElement("div");
+    editor.className = "rich-note-editor";
+    editor.contentEditable = "true";
+    editor.dataset.placeholder = placeholder;
+    editor.innerHTML = value;
+    editor.addEventListener("input", () => onSave(editor.innerHTML));
+    editor.addEventListener("blur", () => onSave(editor.innerHTML));
+
+    wrap.append(toolbar, editor);
+    return wrap;
+  }
+
+  function runNoteCommand(editor, command, value = null) {
+    editor.focus();
+    document.execCommand(command, false, value);
+    editor.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
   function renderItem(item) {

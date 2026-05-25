@@ -203,23 +203,11 @@ button:hover,
   background: rgba(247, 241, 228, 0.55);
 }
 
-.guide-notes label {
+.guide-notes h2 {
   display: block;
   margin-bottom: 7px;
   font-size: 16px;
   font-weight: 700;
-}
-
-.guide-notes textarea {
-  display: block;
-  width: 100%;
-  min-height: 118px;
-  resize: vertical;
-  padding: 11px;
-  border: 1px solid var(--line);
-  border-radius: 0;
-  background: var(--field);
-  color: var(--muted);
 }
 
 .messagebox {
@@ -395,13 +383,21 @@ button:hover,
 
 .section-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 230px) minmax(180px, 230px);
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 230px);
   gap: 18px;
   align-items: start;
   padding-top: 14px;
 }
 
+.section-body.has-pictures {
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 230px) minmax(180px, 230px);
+}
+
 .section-body.has-videos {
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 200px) minmax(220px, 280px);
+}
+
+.section-body.has-pictures.has-videos {
   grid-template-columns: minmax(0, 1fr) minmax(160px, 200px) minmax(170px, 210px) minmax(220px, 280px);
 }
 
@@ -442,23 +438,67 @@ button:hover,
 }
 
 .notes h3,
-.picture h3,
 .tutorial-videos h3 {
   margin: 0 0 6px;
   font-size: 14px;
   font-weight: 400;
 }
 
-.notes textarea {
-  display: block;
+.rich-note {
+  display: grid;
+  gap: 6px;
+}
+
+.rich-note-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.rich-note-toolbar button,
+.rich-note-toolbar select,
+.rich-note-toolbar input[type="color"] {
+  min-height: 28px;
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.rich-note-toolbar button {
+  min-width: 28px;
+  padding: 0 7px;
+}
+
+.rich-note-toolbar select {
+  padding: 0 5px;
+}
+
+.rich-note-toolbar input[type="color"] {
+  width: 32px;
+  padding: 2px;
+}
+
+.rich-note-editor {
   width: 100%;
   min-height: 128px;
-  resize: vertical;
   padding: 11px;
+  overflow: auto;
   border: 1px solid var(--line);
-  border-radius: 0;
   background: var(--field);
   color: var(--muted);
+  line-height: 1.35;
+}
+
+.guide-notes .rich-note-editor {
+  min-height: 118px;
+}
+
+.rich-note-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted);
+  opacity: 0.8;
 }
 
 .picture-list {
